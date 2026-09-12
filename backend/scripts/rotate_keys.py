@@ -10,7 +10,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../.
 
 from cryptography.fernet import Fernet
 from sqlalchemy.orm import Session
-from backend.app.database import SessionLocal
+from backend.app.database import SessionLocal, init_db
 from backend.app.models import Device, User, KeyRotationAudit
 from backend.app.security.crypto import rotate_field_value, get_cipher
 from backend.app.config import settings
@@ -18,11 +18,12 @@ from backend.app.config import settings
 def rotate_encryption_keys(old_key: str, new_key: str):
     """
     Rotates field-level encryption keys:
-    1. Validates both old and new keys.
+    1. Ensures DB schema exists.
     2. Decrypts sensitive fields with old key.
     3. Re-encrypts with new key.
     4. Audits the rotation in database.
     """
+    init_db()
     print(f"[*] Initiating ShieldX Encryption Key Rotation...")
     print(f"[*] Old Key Prefix: {old_key[:8]}...")
     print(f"[*] New Key Prefix: {new_key[:8]}...")
@@ -75,7 +76,6 @@ if __name__ == "__main__":
 
     new_key = args.new_key
     if not new_key:
-        # Generate fresh Fernet key
         new_key = Fernet.generate_key().decode()
 
     rotate_encryption_keys(args.old_key, new_key)
