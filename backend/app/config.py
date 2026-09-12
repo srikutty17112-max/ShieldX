@@ -1,7 +1,6 @@
 ﻿import os
 from typing import List, Union
-from pydantic_settings import BaseSettings
-from pydantic import field_validator
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
     ENVIRONMENT: str = "development"
@@ -29,6 +28,8 @@ class Settings(BaseSettings):
     APPLE_OAUTH_CLIENT_ID: str = ""
     APPLE_OAUTH_CLIENT_SECRET: str = ""
 
+    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
+
     @property
     def cors_origin_list(self) -> List[str]:
         if isinstance(self.CORS_ORIGINS, list):
@@ -36,9 +37,5 @@ class Settings(BaseSettings):
         if isinstance(self.CORS_ORIGINS, str):
             return [o.strip() for o in self.CORS_ORIGINS.split(",") if o.strip()]
         return ["*"]
-
-    class Config:
-        env_file = ".env"
-        extra = "ignore"
 
 settings = Settings()

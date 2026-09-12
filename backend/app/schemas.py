@@ -1,12 +1,23 @@
 ﻿from datetime import datetime
 from typing import List, Optional, Dict, Any
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, EmailStr, Field, ConfigDict
 
 # Auth
+class UserOut(BaseModel):
+    id: int
+    email: str
+    full_name: Optional[str] = None
+    oauth_provider: str
+    voice_language: str
+    live_voice_enabled: bool
+    created_at: datetime
+
+    model_config = ConfigDict(from_attributes=True)
+
 class Token(BaseModel):
     access_token: str
     token_type: str = "bearer"
-    user: "UserOut"
+    user: UserOut
 
 class TokenData(BaseModel):
     user_id: Optional[int] = None
@@ -22,7 +33,7 @@ class UserLogin(BaseModel):
     password: str
 
 class OAuthLoginRequest(BaseModel):
-    provider: str = Field(..., regex="^(google|apple)$")
+    provider: str = Field(..., pattern="^(google|apple)$")
     id_token: str
     full_name: Optional[str] = None
     email: Optional[str] = None
@@ -30,20 +41,6 @@ class OAuthLoginRequest(BaseModel):
 class UserSettingsUpdate(BaseModel):
     voice_language: Optional[str] = None  # 'en', 'ta', 'hi'
     live_voice_enabled: Optional[bool] = None
-
-class UserOut(BaseModel):
-    id: int
-    email: str
-    full_name: Optional[str] = None
-    oauth_provider: str
-    voice_language: str
-    live_voice_enabled: bool
-    created_at: datetime
-
-    class Config:
-        from_attributes = True
-
-Token.update_forward_refs()
 
 # Device & Agent
 class DeviceCreate(BaseModel):
@@ -63,8 +60,7 @@ class DeviceOut(BaseModel):
     last_seen: datetime
     created_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 class DeviceConfigOut(BaseModel):
     device_id: int
@@ -127,15 +123,14 @@ class IncidentOut(BaseModel):
     created_at: datetime
     resolved_at: Optional[datetime] = None
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 class IncidentActionRequest(BaseModel):
     action: str  # 'APPROVE', 'REJECT', 'DISMISS', 'EMERGENCY_STOP'
     actor: str = "VOICE"  # 'VOICE', 'UI'
 
 class IncidentSimulateRequest(BaseModel):
-    threat_type: str = Field(..., regex="^(BRUTE_FORCE|PORT_SCAN|DATA_EXFILTRATION|RANSOMWARE|BENIGN)$")
+    threat_type: str = Field(..., pattern="^(BRUTE_FORCE|PORT_SCAN|DATA_EXFILTRATION|RANSOMWARE|BENIGN)$")
     device_id: Optional[int] = None
 
 # Voice
@@ -172,8 +167,7 @@ class AuditLogOut(BaseModel):
     details: Optional[str] = None
     timestamp: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 # Dashboard Stats & Network Graph
 class NetworkNode(BaseModel):
