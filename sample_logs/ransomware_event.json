@@ -1,0 +1,20 @@
+﻿{
+  "events": [
+    {
+      "event_type": "PROCESS_SPAWN",
+      "command_line": "vssadmin delete shadows /all /quiet",
+      "description": "Suspicious execution of volume shadow copy deletion utility",
+      "source_ip": "103.152.220.4",
+      "destination_port": 445
+    },
+    {
+      "event_type": "FILE_MASS_ALTERATION",
+      "command_line": "cmd.exe /c ren *.docx *.locked",
+      "description": "mass file encryption pattern observed across user document directory",
+      "source_ip": "103.152.220.4",
+      "destination_port": 445
+    }
+  ],
+  "failed_logons": 0,
+  "bytes_out": 20480
+}

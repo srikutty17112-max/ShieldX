@@ -1,0 +1,11 @@
+﻿event_type,source_ip,destination_port,command_line,description
+TCP_SYN,45.146.165.37,21,nmap -sS -p 1-1000,FTP service probe
+TCP_SYN,45.146.165.37,22,nmap -sS -p 1-1000,SSH service probe
+TCP_SYN,45.146.165.37,23,nmap -sS -p 1-1000,Telnet service probe
+TCP_SYN,45.146.165.37,25,nmap -sS -p 1-1000,SMTP service probe
+TCP_SYN,45.146.165.37,80,nmap -sS -p 1-1000,HTTP service probe
+TCP_SYN,45.146.165.37,110,nmap -sS -p 1-1000,POP3 service probe
+TCP_SYN,45.146.165.37,143,nmap -sS -p 1-1000,IMAP service probe
+TCP_SYN,45.146.165.37,443,nmap -sS -p 1-1000,HTTPS service probe
+TCP_SYN,45.146.165.37,445,nmap -sS -p 1-1000,SMB service probe
+TCP_SYN,45.146.165.37,3389,nmap -sS -p 1-1000,RDP service probe
