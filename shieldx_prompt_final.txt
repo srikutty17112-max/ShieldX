@@ -1,0 +1,200 @@
+Build a full-stack web application called "ShieldX" — a voice-first, AI-powered
+cybersecurity threat detection and human-approved response platform.
+
+PROJECT OVERVIEW:
+ShieldX lets a user create an account, log in (typing/OAuth only — this is the
+ONLY typing-based part of the app), and then download a small cross-platform
+Python monitoring agent that runs on their own device (Windows/Linux/Mac). The
+agent collects real, safe, READ-ONLY security telemetry and sends it to the
+backend over HTTPS. The backend detects threats (both known attack patterns
+and unusual/anomalous activity it hasn't seen before), explains them in plain
+language via an AI voice assistant, and requires the user's explicit VOICE
+approval before executing any simulated response action. After login, the
+entire dashboard must be operable by voice alone — on-screen buttons remain
+only as a visible fallback for accessibility.
+
+Do NOT use the names "Jarvis" or "Karen" anywhere. Give the voice assistant one
+consistent, simple, fresh name used throughout the app.
+
+PIPELINE:
+Login (typing/OAuth) -> Download & Run Agent -> Real Telemetry over HTTPS ->
+Threat Detection (rule-based + anomaly-based) -> MITRE ATT&CK Mapping -> AI
+Explanation -> Voice Assistant Briefing -> Voice Approval -> Simulated
+Response Execution -> PDF Incident Report + Geo Map + Audit Log
+
+TECH STACK:
+- Frontend: React (Vite)
+- Backend: Python + FastAPI
+- Database: PostgreSQL (SQLite fallback for local dev)
+- Auth: Email + password (bcrypt-hashed, salted) AND OAuth login via Google
+  and Apple ("Sign in with Google" / "Sign in with Apple") using their
+  standard OAuth2/OpenID Connect flows. ShieldX must NEVER see, ask for, or
+  store the user's actual Google/Apple password — authentication is fully
+  delegated to Google/Apple, and ShieldX only receives a verified identity
+  token back. Normal email/password signup remains available as an
+  alternative.
+- Agent: single-file cross-platform Python script (`shieldx_agent.py`):
+  - Detects OS via `platform.system()` and reads the appropriate
+    read-only source (Windows Event Log for failed logons; Linux
+    /var/log/auth.log or journalctl; macOS unified log via `log show`)
+  - Strictly READ-ONLY — never modifies, deletes, or executes anything
+    on the host; requires no more privilege than reading standard OS
+    auth logs
+  - Sends telemetry every 30–60 seconds over HTTPS, authenticated with a
+    per-user API key embedded in a config file downloaded from the
+    dashboard (no manual key copy-paste)
+- AI Engine: Google Gemini API (key read from environment variable
+  GEMINI_API_KEY, never hardcoded, never logged, never exposed to the
+  frontend). If unset, fall back to a rule-based explanation engine so the
+  app still works offline for demos.
+- Voice: two tiers, both required:
+  1. Baseline (always available): Web Speech API — SpeechSynthesis for
+     the assistant speaking (natural-sounding voice) and
+     SpeechRecognition for commands, with continuous-listening mode
+     inside the dashboard so no typing is needed post-login.
+  2. Enhanced "Live Voice Chat" mode (a dashboard toggle): natural,
+     low-latency, interruptible voice-to-voice conversation using the
+     Gemini Live API (streaming audio in/out over WebSocket). If Gemini
+     Live is unavailable/unconfigured, gracefully fall back to the
+     baseline Web Speech mode without breaking the app.
+
+VOICE ASSISTANT — SIX ADVANCED FEATURES (all required):
+1. Multi-language voice support: English, Tamil, and Hindi at minimum,
+   selectable in settings, for both recognition and spoken responses
+2. Proactive spoken alerts: on high/critical severity detections, the
+   assistant speaks up unprompted rather than waiting to be asked
+3. Daily/weekly spoken summary briefing on request or schedule (e.g.,
+   "In the last 24 hours I flagged 3 events and blocked 1 confirmed
+   threat")
+4. Context-aware follow-up understanding: keeps short-term conversation
+   context so the user can ask natural follow-ups without repeating
+   context
+5. Emergency voice override: for critical threats, an urgent tone and a
+   short clear override phrase (e.g., "Emergency — say STOP to block
+   immediately")
+6. Sentiment-aware tone adjustment: if user input suggests stress/urgency,
+   the assistant's tone becomes calmer and more reassuring
+
+DETECTION ENGINE (both required):
+1. Rule-based detection for known patterns (brute force, port scan, data
+   exfiltration volume thresholds, ransomware-like mass file/shadow-copy
+   activity)
+2. Anomaly-based detection for previously-unseen patterns: establish a
+   simple behavioral baseline per connected device (e.g., typical
+   connection volume/timing) and flag statistically unusual deviations
+   even when they don't match a known rule, explicitly labeled in the UI
+   as "Anomaly — unclassified pattern" so the user knows it's not a known
+   attack signature
+3. Every detected/simulated event includes a MITRE ATT&CK technique
+   mapping where applicable (e.g., "T1110 — Brute Force", "T1486 — Data
+   Encrypted for Impact") shown in the incident detail view
+
+MODULES TO BUILD:
+
+1. Auth & Agent Provisioning
+   - Email/password signup+login AND Google/Apple OAuth login
+   - Post-login "Download Agent" screen generating a per-user API key
+     bundled into a downloadable config + the agent script/instructions
+   - Strict multi-tenant isolation — a user only ever sees their own
+     devices, incidents, and reports
+
+2. Telemetry Ingestion & Threat Detection
+   - Endpoint receiving agent telemetry, authenticated by per-user API key,
+     rate-limited to prevent abuse
+   - Keep the existing simulated-attack buttons (Brute Force, Port Scan,
+     Data Exfiltration, Ransomware, Benign Traffic) clearly labeled
+     "Simulated" so real vs. simulated is never ambiguous
+   - Support manual upload of a real log file (JSON/CSV) as an
+     alternative to running the agent
+
+3. AI Analysis, Explanation & MITRE Mapping
+   - Gemini analyzes each event, returns plain-language explanation, risk
+     level (Low/Medium/High/Critical), recommended action, and the MITRE
+     ATT&CK mapping
+
+4. Voice-First Interaction Layer
+   - Implements all 6 advanced voice features plus baseline + Live Voice
+     Chat tiers
+   - Every action (connect device, review incident, approve/reject, ask a
+     question, request a summary) must be voice-operable; visible on-screen
+     buttons remain as fallback only
+
+5. Response Execution, Audit & Reporting
+   - Simulated execution of approved actions with full audit log
+     (timestamp, actor = voice/UI, action, result)
+   - Auto-generated PDF incident report per resolved incident (summary,
+     timeline, MITRE mapping, explanation, action taken, approver) —
+     downloadable from the dashboard
+   - A geographic map view plotting the (simulated or real, where
+     available) source IP's approximate origin for each incident
+
+6. Dashboard Theme & Visualization
+   - A "command-center" visual theme (dark background, tactical
+     green/amber accents, subtle radar/scan animation, a live threat
+     counter) — cosmetic, must not slow down real functionality
+   - A real-time network activity visualization (animated flow graph of
+     recent connections/events) on the main dashboard
+
+SECURITY REQUIREMENTS (CORE, NON-NEGOTIABLE):
+- Passwords: bcrypt (or equivalent) with per-user salt; OAuth users never
+  have a locally-stored password at all
+- Per-user API keys for agent auth, securely generated, revocable, never
+  reused across users
+- All agent-to-backend and frontend-to-backend traffic over HTTPS only
+- Agent is strictly read-only in the actual implementation, not just docs
+- Database encryption at rest (AES-256) for the data store
+- Field-level encryption for especially sensitive fields (API keys, OAuth
+  tokens) in addition to database-level encryption
+- Automatic key rotation policy for backend encryption keys (e.g., every
+  30 days), documented and implemented via a rotation utility/script
+- Rate-limiting on all public-facing endpoints, especially telemetry
+  ingestion and auth
+- CORS locked to the deployed frontend domain in production (never `*`)
+- No secrets (API keys, JWT secret, OAuth client secrets) ever exposed to
+  frontend code, logs, or error messages
+
+UI/UX REQUIREMENTS:
+- Command-center dark theme as described above
+- Persistent visual indicator of listening/thinking/speaking state
+- Clear "Simulated" vs "Real" vs "Anomaly" badges on incidents
+- Settings screen: language selection, Live Voice Chat toggle, OAuth
+  account linking
+
+DEPLOYMENT REQUIREMENTS:
+- Backend deployable to Render.com as a standalone FastAPI service;
+  frontend deployable to Vercel as a standalone Vite app
+- .env.example listing all required variables (GEMINI_API_KEY,
+  DATABASE_URL, JWT_SECRET, GOOGLE_OAUTH_CLIENT_ID/SECRET,
+  APPLE_OAUTH_CLIENT_ID/SECRET, CORS_ORIGINS, ENCRYPTION_KEY, etc.) — spell
+  CORS_ORIGINS correctly and use it consistently everywhere
+- README with clear deployment steps for both Render and Vercel, including
+  how to register OAuth apps with Google/Apple and where to put the
+  resulting credentials
+
+WEBSITE FOOTER (required on the marketing/landing page):
+Include a professional multi-column footer (styled like Cursor's website
+footer: cursor.com) with these exact columns and links:
+- Product: Features, Voice Assistant, Pricing, Security
+- Resources: Documentation, Download Agent, FAQ, Community, Status
+- Company: About ShieldX, Contact, Blog
+- Legal: Terms of Service, Privacy Policy, Acceptable Use Policy, Data Use,
+  Security
+- Connect: Email (srikutty9080@gmail.com), Instagram (@_vasan__18), LinkedIn
+  (https://www.linkedin.com/in/vasan-s-profile)
+Below the columns, include a copyright line: "© 2026 ShieldX. All rights
+reserved." Footer links can point to simple placeholder pages/sections where
+a real page isn't otherwise specified in this brief.
+
+GIT / GITHUB REQUIREMENTS (DO THIS FIRST):
+- Initialize git at the very start of the project
+- Commit incrementally and frequently as features are completed
+- .gitignore covering node_modules, __pycache__, .env, venv, and any
+  agent config files containing API keys
+
+DELIVERABLE:
+A working prototype (frontend + backend + downloadable agent) with the full
+feature set above, runnable locally with clear setup instructions AND
+deployable online (Render + Vercel) with clear README steps. Prioritize a
+working end-to-end pipeline (real + simulated + anomaly detection, voice
+interaction, approval, PDF report, MITRE mapping) over visual polish. Explain
+any setup or deployment steps in simple terms.
