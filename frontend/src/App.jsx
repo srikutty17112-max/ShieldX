@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from './context/AuthContext';
 import { useVoice } from './context/VoiceContext';
 import { Navbar } from './components/Navbar';
+import { SplashScreen } from './components/SplashScreen';
 import { LandingPage } from './pages/LandingPage';
 import { LoginPage } from './pages/LoginPage';
 import { SignupPage } from './pages/SignupPage';
@@ -14,6 +15,7 @@ import { SettingsPage } from './pages/SettingsPage';
 import { Loader2 } from 'lucide-react';
 
 export function App() {
+  const [showSplash, setShowSplash] = useState(true);
   const { user, token, isLoading } = useAuth();
   const { currentTranscript } = useVoice();
 
@@ -61,6 +63,10 @@ export function App() {
       setActiveTab('dashboard');
     }
   }, [currentTranscript, token]);
+
+  if (showSplash) {
+    return <SplashScreen onDone={() => setShowSplash(false)} />;
+  }
 
   if (isLoading) {
     return (
