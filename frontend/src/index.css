@@ -1,0 +1,59 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    background-color: #060a12;
+    color: #e2e8f0;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+}
+
+/* Custom Tactical Cyber Styling */
+.cyber-grid {
+  background-size: 32px 32px;
+  background-image: 
+    linear-gradient(to right, rgba(31, 46, 77, 0.25) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(31, 46, 77, 0.25) 1px, transparent 1px);
+}
+
+.glow-green {
+  box-shadow: 0 0 15px rgba(0, 255, 157, 0.35);
+}
+
+.glow-cyan {
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.35);
+}
+
+.glow-red {
+  box-shadow: 0 0 20px rgba(255, 0, 85, 0.5);
+}
+
+.glow-amber {
+  box-shadow: 0 0 15px rgba(255, 183, 3, 0.35);
+}
+
+/* Custom Tactical Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0a0f1d;
+}
+::-webkit-scrollbar-thumb {
+  background: #1f2e4d;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #00ff9d;
+}
+
+/* Leaflet dark theme map tweaks */
+.leaflet-tile {
+  filter: brightness(0.6) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3) brightness(0.7);
+}
+.leaflet-container {
+  background: #0a0f1d !important;
+}
