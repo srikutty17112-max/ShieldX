@@ -1,11 +1,11 @@
-﻿import os
+import os
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from backend.app.config import settings
-from backend.app.database import init_db
-from backend.app.routers import auth, agents, telemetry, incidents, voice, audit, stats
+from app.config import settings
+from app.database import init_db
+from app.routers import auth, agents, telemetry, incidents, voice, audit, stats
 
 app = FastAPI(
     title="ShieldX API",

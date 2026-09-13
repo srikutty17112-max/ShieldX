@@ -1,10 +1,10 @@
-﻿from typing import List
+from typing import List
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from backend.app.database import get_db
-from backend.app.models import AuditLog, User
-from backend.app.schemas import AuditLogOut
-from backend.app.security.auth import get_current_user
+from app.database import get_db
+from app.models import AuditLog, User
+from app.schemas import AuditLogOut
+from app.security.auth import get_current_user
 
 router = APIRouter(prefix="/api/v1/audit", tags=["Audit Log"])
 

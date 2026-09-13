@@ -1,16 +1,16 @@
-﻿import os
+import os
 import secrets
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException, status, Response
 from fastapi.responses import FileResponse, JSONResponse
 from sqlalchemy.orm import Session
 
-from backend.app.database import get_db
-from backend.app.models import Device, User
-from backend.app.schemas import DeviceCreate, DeviceOut, DeviceConfigOut
-from backend.app.security.auth import get_current_user
-from backend.app.security.crypto import encrypt_field, decrypt_field
-from backend.app.config import settings
+from app.database import get_db
+from app.models import Device, User
+from app.schemas import DeviceCreate, DeviceOut, DeviceConfigOut
+from app.security.auth import get_current_user
+from app.security.crypto import encrypt_field, decrypt_field
+from app.config import settings
 
 router = APIRouter(prefix="/api/v1/agents", tags=["Agent Provisioning"])
 

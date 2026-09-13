@@ -1,7 +1,7 @@
-﻿import httpx
+import httpx
 from typing import Dict, Any, Optional
 from fastapi import HTTPException, status
-from backend.app.config import settings
+from app.config import settings
 
 async def verify_google_token(id_token: str) -> Dict[str, Any]:
     """

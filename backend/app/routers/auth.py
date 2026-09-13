@@ -1,16 +1,16 @@
-﻿from fastapi import APIRouter, Depends, HTTPException, status, Request
+from fastapi import APIRouter, Depends, HTTPException, status, Request
 from sqlalchemy.orm import Session
-from backend.app.database import get_db
-from backend.app.models import User
-from backend.app.schemas import (
+from app.database import get_db
+from app.models import User
+from app.schemas import (
     UserCreate, UserLogin, UserOut, Token, OAuthLoginRequest, UserSettingsUpdate
 )
-from backend.app.security.auth import (
+from app.security.auth import (
     verify_password, get_password_hash, create_access_token, get_current_user
 )
-from backend.app.security.oauth import verify_google_token, verify_apple_token
-from backend.app.security.crypto import encrypt_field
-from backend.app.security.rate_limiter import auth_limiter
+from app.security.oauth import verify_google_token, verify_apple_token
+from app.security.crypto import encrypt_field
+from app.security.rate_limiter import auth_limiter
 
 router = APIRouter(prefix="/api/v1/auth", tags=["Authentication"])
 

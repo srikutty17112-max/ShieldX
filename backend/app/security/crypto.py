@@ -1,8 +1,8 @@
-﻿import base64
+import base64
 import os
 from datetime import datetime, timedelta
 from cryptography.fernet import Fernet, InvalidToken
-from backend.app.config import settings
+from app.config import settings
 
 def get_cipher(key_str: str = None) -> Fernet:
     k = key_str or settings.ENCRYPTION_KEY

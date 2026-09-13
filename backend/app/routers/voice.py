@@ -1,15 +1,15 @@
-﻿import json
+import json
 import asyncio
 from datetime import datetime, timedelta
 from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, WebSocket, WebSocketDisconnect
 from sqlalchemy.orm import Session
 
-from backend.app.database import get_db
-from backend.app.models import User, ThreatIncident, AuditLog, Device
-from backend.app.schemas import VoiceChatRequest, VoiceChatResponse, VoiceBriefingResponse
-from backend.app.security.auth import get_current_user
-from backend.app.services.voice_service import VoiceService
+from app.database import get_db
+from app.models import User, ThreatIncident, AuditLog, Device
+from app.schemas import VoiceChatRequest, VoiceChatResponse, VoiceBriefingResponse
+from app.security.auth import get_current_user
+from app.services.voice_service import VoiceService
 
 router = APIRouter(prefix="/api/v1/voice", tags=["Voice Interaction Engine"])
 

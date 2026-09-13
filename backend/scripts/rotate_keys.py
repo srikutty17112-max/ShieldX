@@ -1,4 +1,4 @@
-﻿import sys
+import sys
 import os
 import argparse
 import secrets
@@ -10,10 +10,10 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../.
 
 from cryptography.fernet import Fernet
 from sqlalchemy.orm import Session
-from backend.app.database import SessionLocal, init_db
-from backend.app.models import Device, User, KeyRotationAudit
-from backend.app.security.crypto import rotate_field_value, get_cipher
-from backend.app.config import settings
+from app.database import SessionLocal, init_db
+from app.models import Device, User, KeyRotationAudit
+from app.security.crypto import rotate_field_value, get_cipher
+from app.config import settings
 
 def rotate_encryption_keys(old_key: str, new_key: str):
     """

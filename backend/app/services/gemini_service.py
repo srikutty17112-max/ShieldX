@@ -1,7 +1,7 @@
-﻿import os
+import os
 import logging
 from typing import Dict, Any, Optional
-from backend.app.config import settings
+from app.config import settings
 
 logger = logging.getLogger("shieldx.gemini")
 

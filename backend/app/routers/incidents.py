@@ -1,16 +1,16 @@
-﻿from datetime import datetime
+from datetime import datetime
 from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, status, Response
 from sqlalchemy.orm import Session
 
-from backend.app.database import get_db
-from backend.app.models import ThreatIncident, AuditLog, User, Device
-from backend.app.schemas import IncidentOut, IncidentActionRequest, IncidentSimulateRequest
-from backend.app.security.auth import get_current_user
-from backend.app.services.detection_engine import MITRE_TECHNIQUES
-from backend.app.services.gemini_service import generate_threat_explanation
-from backend.app.services.geo_service import resolve_ip_geo
-from backend.app.services.report_generator import generate_incident_pdf
+from app.database import get_db
+from app.models import ThreatIncident, AuditLog, User, Device
+from app.schemas import IncidentOut, IncidentActionRequest, IncidentSimulateRequest
+from app.security.auth import get_current_user
+from app.services.detection_engine import MITRE_TECHNIQUES
+from app.services.gemini_service import generate_threat_explanation
+from app.services.geo_service import resolve_ip_geo
+from app.services.report_generator import generate_incident_pdf
 
 router = APIRouter(prefix="/api/v1/incidents", tags=["Threat Incidents"])
 

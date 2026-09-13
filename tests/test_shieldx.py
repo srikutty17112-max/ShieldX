@@ -1,16 +1,16 @@
-﻿import pytest
+import pytest
 import os
 import sys
 
-# Ensure project root in sys.path
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+# Add backend/ to path so `app.X` imports resolve (matches Render rootDir=backend)
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "backend")))
 
-from backend.app.security.auth import get_password_hash, verify_password, create_access_token
-from backend.app.security.crypto import encrypt_field, decrypt_field, rotate_field_value, Fernet
-from backend.app.services.detection_engine import DetectionEngine
-from backend.app.services.voice_service import VoiceService
-from backend.app.services.report_generator import generate_incident_pdf
-from backend.app.models import ThreatIncident, User
+from app.security.auth import get_password_hash, verify_password, create_access_token
+from app.security.crypto import encrypt_field, decrypt_field, rotate_field_value, Fernet
+from app.services.detection_engine import DetectionEngine
+from app.services.voice_service import VoiceService
+from app.services.report_generator import generate_incident_pdf
+from app.models import ThreatIncident, User
 from datetime import datetime
 
 def test_password_hashing():

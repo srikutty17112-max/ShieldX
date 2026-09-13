@@ -1,12 +1,12 @@
-﻿import random
+import random
 from datetime import datetime, timedelta
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from backend.app.database import get_db
-from backend.app.models import Device, ThreatIncident, User
-from backend.app.schemas import DashboardStats, NetworkNode, NetworkEdge
-from backend.app.security.auth import get_current_user
+from app.database import get_db
+from app.models import Device, ThreatIncident, User
+from app.schemas import DashboardStats, NetworkNode, NetworkEdge
+from app.security.auth import get_current_user
 
 router = APIRouter(prefix="/api/v1/stats", tags=["Dashboard Statistics"])
 

@@ -1,4 +1,4 @@
-﻿import json
+import json
 import csv
 import io
 from datetime import datetime
@@ -6,15 +6,15 @@ from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, Header, Request, UploadFile, File, status
 from sqlalchemy.orm import Session
 
-from backend.app.database import get_db
-from backend.app.models import Device, TelemetryLog, ThreatIncident, AuditLog, User
-from backend.app.schemas import TelemetryPayload, TelemetryResponse
-from backend.app.security.crypto import decrypt_field
-from backend.app.security.rate_limiter import telemetry_limiter
-from backend.app.services.detection_engine import DetectionEngine, MITRE_TECHNIQUES
-from backend.app.services.gemini_service import generate_threat_explanation
-from backend.app.services.geo_service import resolve_ip_geo
-from backend.app.security.auth import get_current_user
+from app.database import get_db
+from app.models import Device, TelemetryLog, ThreatIncident, AuditLog, User
+from app.schemas import TelemetryPayload, TelemetryResponse
+from app.security.crypto import decrypt_field
+from app.security.rate_limiter import telemetry_limiter
+from app.services.detection_engine import DetectionEngine, MITRE_TECHNIQUES
+from app.services.gemini_service import generate_threat_explanation
+from app.services.geo_service import resolve_ip_geo
+from app.security.auth import get_current_user
 
 router = APIRouter(prefix="/api/v1/telemetry", tags=["Telemetry Ingestion"])
 
