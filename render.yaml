@@ -1,12 +1,15 @@
-﻿services:
+services:
   - type: web
     name: shieldx-backend
     env: python
+    rootDir: .
     buildCommand: "pip install -r backend/requirements.txt"
-    startCommand: "uvicorn backend.app.main:app --host 0.0.0.0 --port $PORT"
+    startCommand: "python -m uvicorn backend.app.main:app --host 0.0.0.0 --port $PORT"
     envVars:
       - key: ENVIRONMENT
         value: production
+      - key: PYTHONPATH
+        value: /opt/render/project/src
       - key: CORS_ORIGINS
         sync: false
       - key: DATABASE_URL
